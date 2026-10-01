@@ -116,6 +116,11 @@ main{padding-block:4px 32px}
 .itempic{display:block;width:min(100%,240px);margin:0 auto;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;cursor:zoom-in}
 .itempic img{display:block;width:100%;height:auto}
 .itempic:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.row.rowb{flex-direction:column;align-items:stretch;gap:12px}
+.rbpic{display:block;width:min(100%,140px);margin:0 auto;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.rbpic img{display:block;width:100%;height:auto}
+.rbline{display:flex;align-items:center;gap:14px}
+.list.small .itempic{width:min(100%,140px)}
 .zoom{position:fixed;inset:0;z-index:50;background:rgba(10,20,35,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px 16px}
 .zoom[hidden]{display:none}
 .zoom img{max-width:min(92vw,520px);max-height:75vh;border-radius:14px;background:#fff}
@@ -134,7 +139,7 @@ main{padding-block:4px 32px}
   <header class="header" id="hdr"></header>
   <div id="hero"></div>
   <main id="view"></main>
-  <div class="zoom" id="zoom" hidden><img id="zoomImg" alt=""><p id="zoomCap"></p><button type="button" id="zoomClose">ปิด</button></div>
+  <div class="zoom" id="zoom" hidden><img id="zoomImg" alt=""><p id="zoomCap"></p><button type="button" id="zoomClose" aria-label="ปิดภาพ"></button></div>
 </div>
 
 <script>
@@ -164,6 +169,7 @@ const itemP = (icon, title, body, k, alt) => `<div class="item sign"><span class
 const itemB = (icon, title, body, k, alt) => `<div class="item stack"><button class="itempic" data-zoom="${k}" aria-label="ดูภาพ${alt}"><img src="${SIGNS[k]}" alt="${alt}"></button><span class="label">${body ? `<span class="item-title">${title}</span>${body}` : title}</span></div>`;
 const bigImg = (k, alt) => `<div class="item big"><button class="bigpic" data-zoom="${k}" aria-label="ดูภาพ${alt}"><img src="${SIGNS[k]}" alt="${alt}"></button></div>`;
 const itemN = (title, body) => `<div class="item"><span class="label">${body ? `<span class="item-title">${title}</span>${body}` : title}</span></div>`;
+const rowB = (to, k, label) => `<button class="row rowb" data-go="${to}"><span class="rbpic"><img src="${SIGNS[k]}" alt=""></span><span class="rbline"><span class="label">${label}</span><span class="chev" aria-hidden="true">›</span></span></button>`;
 const NUC = `<div class="note">⚠️ สอบถามเพิ่มเติม:<br>สาขาเวชศาสตร์นิวเคลียร์ รพ.รามาธิบดี<br>โทร. 02-201-1192</div>`;
 const SOS = `<div class="sos"><div class="sos-label">🚨 กรณีเจ็บป่วยฉุกเฉินหรือวิกฤต</div>${tel('1669','โทร 1669')}</div>`;
 
@@ -172,8 +178,8 @@ const VIEWS = {
       ${row('preop','ivicon','การปฏิบัติตัวก่อนผ่าตัด')}
       ${row('inhospital','hospital','การปฏิบัติตัวหลังผ่าตัด<br>ขณะอยู่ที่ รพ.')}
       ${row('postop','house','การปฏิบัติตัวหลังผ่าตัด<br>เมื่อกลับบ้าน')}
-      ${row('rai','rad','การกลืนแร่ไอโอดีนรังสี')}
       ${row('danger','signs','อาการผิดปกติที่ควรมาพบแพทย์')}
+      ${row('rai','rad','การกลืนแร่ไอโอดีนรังสี')}
       ${row('contact','phone','ติดต่อโรงพยาบาล','เบอร์ติดต่อหน่วยตรวจและหอผู้ป่วย')}
     </div>`,
   preop: () => `<button class="banner" data-zoom="ivbed" aria-label="ดูภาพผู้ป่วยเตรียมผ่าตัด"><img src="${SIGNS.ivbed}" alt="ผู้ป่วยนอนโรงพยาบาลเตรียมผ่าตัด"></button>
@@ -199,12 +205,12 @@ const VIEWS = {
       ${itemB('💍','5. ไม่นำของมีค่าติดตัวไปห้องผ่าตัด','','valuables','ของมีค่า สร้อย แหวน นาฬิกา เงิน')}
     </div>
     <div class="note">⚠️ อาการข้างเคียงหลังดมยาสลบที่อาจเกิดขึ้นได้ เช่น เจ็บคอ คลื่นไส้อาเจียน เวียนศีรษะ เป็นต้น<br>หลังผ่าตัด หากมีอาการ ให้แจ้งพยาบาลทราบทันที</div>`,
-  postop: () => `<div class="list">
-      ${row('wound','woundicon','การดูแลแผลผ่าตัด เมื่อกลับบ้าน')}
-      ${itemP('📅','มาตรวจติดตามอาการตามแพทย์นัดค่ะ','<span class="app-note"><img src="'+ICONS.rama+'" alt="RAMA APP"><span>เลื่อนนัดได้ทาง <span style="white-space:nowrap">RAMA APP</span></span></span>','appt','มาพบแพทย์ตามวันนัด')}
-      ${itemP('⚠️','หลีกเลี่ยงการหันศีรษะไปมาอย่างรวดเร็ว<br>อาจทำให้กล้ามเนื้อคออักเสบได้','','noturn','ห้ามหันศีรษะไปมาอย่างรวดเร็ว')}
-      ${row('calcium','spasmicon','สังเกตภาวะแคลเซียมในเลือดต่ำ')}
-      ${row('iodine','noiodineicon','งดอาหารไอโอดีน<br>(ถ้าต้องกลืนแร่)')}
+  postop: () => `<div class="list small">
+      ${rowB('wound','tegaderm','การดูแลแผลผ่าตัด เมื่อกลับบ้าน')}
+      ${itemB('📅','มาตรวจติดตามอาการตามแพทย์นัดค่ะ','<span class="app-note"><img src="'+ICONS.rama+'" alt="RAMA APP"><span>เลื่อนนัดได้ทาง <span style="white-space:nowrap">RAMA APP</span></span></span>','appt','มาพบแพทย์ตามวันนัด')}
+      ${itemB('⚠️','หลีกเลี่ยงการหันศีรษะไปมาอย่างรวดเร็ว<br>อาจทำให้กล้ามเนื้อคออักเสบได้','','noturn','ห้ามหันศีรษะไปมาอย่างรวดเร็ว')}
+      ${rowB('calcium','spasm','สังเกตภาวะแคลเซียมในเลือดต่ำ')}
+      ${rowB('iodine','noiodine','งดอาหารไอโอดีน (ถ้าต้องกลืนแร่)')}
     </div>
     <div class="list">
       ${doc('https://drive.google.com/file/d/1HlTWkEJk9oe3Hgxj3uw0rmRQoEvIMQzR/view?usp=drivesdk','📄','แผ่นพับคำแนะนำการปฏิบัติหลังผ่าตัดไทรอยด์')}
@@ -307,6 +313,7 @@ function render(id, push){
 }
 
 const zoom = document.getElementById('zoom');
+document.getElementById('zoomClose').textContent = 'ปิด';
 document.getElementById('zoomClose').addEventListener('click', () => { zoom.hidden = true; });
 zoom.addEventListener('click', e => { if (e.target === zoom) zoom.hidden = true; });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') zoom.hidden = true; });
